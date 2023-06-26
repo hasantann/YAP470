@@ -10,7 +10,6 @@ class DecisionTreeClassifier:
         # Stopping conditions
         if self.max_depth is not None and depth >= self.max_depth:
             return self.get_leaf_node(y)
-
         if len(set(y)) == 1:
             return self.get_leaf_node(y)
 
@@ -18,9 +17,9 @@ class DecisionTreeClassifier:
         best_gini = float('inf')
         best_feature_index = None
         best_threshold = None
-
         for feature_index in range(X.shape[1]):
-            thresholds = self.unique_values(X[:, feature_index])
+            thresholds = self.unique_values(X.iloc[:, feature_index])
+            print(thresholds)
             for threshold in thresholds:
                 left_X, left_y, right_X, right_y = self.split_node(X, y, feature_index, threshold)
                 gini = (len(left_y) * self.calculate_gini(left_y) + len(right_y) * self.calculate_gini(right_y)) / len(y)
@@ -29,7 +28,7 @@ class DecisionTreeClassifier:
                     best_gini = gini
                     best_feature_index = feature_index
                     best_threshold = threshold
-
+        print("best_feature_index: ", best_feature_index, "best_gini:", best_gini, "best_threshold", )
         # Create the node
         node = {
             'feature_index': best_feature_index,
@@ -60,6 +59,7 @@ class DecisionTreeClassifier:
         for sample in X:
             prediction = self.traverse_tree(sample, self.tree)
             predictions.append(prediction)
+            print("Sample:", sample, "Prediction:", prediction)
         return predictions
 
     def traverse_tree(self, sample, node):
@@ -89,7 +89,7 @@ class DecisionTreeClassifier:
         left_X, left_y, right_X, right_y = [], [], [], []
 
         for i in range(len(X)):
-            if X[i][feature_index] <= threshold:
+            if X.iloc[i,feature_index] <= threshold:
                 left_X.append(X[i])
                 left_y.append(y[i])
             else:

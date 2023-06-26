@@ -49,6 +49,7 @@ class DecisionTreeClassifier:
                 return self.traverse_tree(sample, node['left'])
             else:
                 return self.traverse_tree(sample, node['right'])
+            
     def print_tree(self):
         self.print_node(self.tree)
 
@@ -93,11 +94,11 @@ class DecisionTreeClassifier:
         count_1 = 0
         count_2 = 0
         for value in column:
-            if value == [0.0]:
+            if value == 0.0:
                 count_0 += 1
-            elif value == [1.0]:
+            elif value == 1.0:
                 count_1 += 1
-            elif value == [2.0]:
+            elif value == 2.0:
                 count_2 += 1
         counts = [count_0,count_1,count_2]
         return counts

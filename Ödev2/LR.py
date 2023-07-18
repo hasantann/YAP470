@@ -2,7 +2,7 @@ class LinearRegression:
     def __init__(self, learning_rate=0.01, num_epochs=1000):
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
-        self.weight_slope = 0
+        self.weight_slope = [1, 2]
         self.bias = 0
 
     def normalize(self, feature):

@@ -2,39 +2,31 @@ class LinearRegression:
     def __init__(self, learning_rate=0.01, num_epochs=1000):
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
-        self.weight_slope = [1, 2]
+        self.m1 = 1
+        self.m2 = 2
         self.bias = 0
+        self.loss = []
+        self.accuracy = []    
 
-    def normalize(self, feature):
-        return (feature - min(feature)) / (max(feature) - min(feature))
-
-    def hypothesis(self, x):
-        return self.weight_slope * x + self.bias
-
-    def cost_function(self, predictions, targets):
-        return sum((predictions - targets) ** 2) / (2 * len(targets))
+    def hypothesis(self, weight, height):
+        return self.m1 * height + self.m2 * weight + self.bias
 
     def fit(self, height, weight, bmi):
-        normalized_height = self.normalize(height)
-        normalized_weight = self.normalize(weight)
-
         for epoch in range(self.num_epochs):
-            predictions = [self.hypothesis(x) for x in normalized_height]
+            bias_gradient = 0
+            predictions = [self.hypothesis(x, y) for x, y in zip(weight, height)]
 
-            weight_gradient = sum((predictions[i] - bmi[i]) * normalized_height[i] for i in range(len(height))) / len(height)
-            bias_gradient = sum(predictions[i] - bmi[i] for i in range(len(height))) / len(height)
-
-            self.weight_slope -= self.learning_rate * weight_gradient
+            # Calculate gradients
+            weight_gradient = sum(2 * (predictions[i] - bmi[i]) * weight[i] for i in range(len(weight))) / len(weight)
+            height_gradient = sum(2 * (predictions[i] - bmi[i]) * height[i] for i in range(len(height))) / len(height)
+            bias_gradient = sum(2 * (predictions[i] - bmi[i]) for i in range(len(weight))) / len(weight)
+            self.m2 -= self.learning_rate * weight_gradient
+            self.m1 -= self.learning_rate * height_gradient
             self.bias -= self.learning_rate * bias_gradient
 
-            cost = self.cost_function(predictions, bmi)
-
-            if (epoch + 1) % 100 == 0:
-                print(f"Epoch {epoch + 1}/{self.num_epochs}, Cost: {cost}")
-
     def predict(self, new_height, new_weight):
-        normalized_new_height = self.normalize(new_height)
-        normalized_new_weight = self.normalize(new_weight)
-
-        predictions = [self.hypothesis(x) for x in normalized_new_height]
+        predictions = []
+        for i in range(len(new_height)):
+            prediction = self.hypothesis(new_weight[i], new_height[i])
+            predictions.append(prediction)
         return predictions

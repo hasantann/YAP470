@@ -28,5 +28,7 @@ class LinearRegression:
         predictions = []
         for i in range(len(new_height)):
             prediction = self.hypothesis(new_weight[i], new_height[i])
+            if self.num_epochs % 500 == 0: 
+                print("Epoch: {} - Prediction: {}".format(self.num_epochs, prediction))
             predictions.append(prediction)
         return predictions
